@@ -1,11 +1,5 @@
 import type { NextPage } from "next";
-import {
-  gql,
-  NetworkStatus,
-  useLazyQuery,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
+import { gql, NetworkStatus, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { Loading } from "./Loading";
 import styles from "../styles/Home.module.css";
