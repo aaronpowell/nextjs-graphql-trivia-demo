@@ -36,13 +36,24 @@ const Home: NextPage<{ count: number }> = (props) => {
       </main>
 
       <footer className={styles.footer}>
-        Build with Next.js,{" "}
+        <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">
+          Build with Next.js
+        </a>
+
         <a
-          href="https://https://docs.microsoft.com/azure/static-web-apps/"
+          href="https://docs.microsoft.com/azure/static-web-apps/"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by Azure
+        </a>
+
+        <a
+          href="https://github.com/aaronpowell/nextjs-graphql-trivia-demo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Sourced on GitHub
         </a>
       </footer>
     </div>

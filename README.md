@@ -1,35 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Next.js trivia app
+
+This is a Next.js trivia demo application that shows how you can use GraphQL in an API route to talk to [Azure Cosmos DB]() to make an application that can be deployed to [Azure Static Web Apps]() using the [hybrid Next.js app support]().
 
 ## Getting Started
 
-First, run the development server:
+### Devcontainer
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+The simplest way to get started is using a [VSCode devcontainer](), which has been shipped as part of this repository. When VSCode opens it will prompt you to open in the container and that will install the relevant Node.js packages, as well as setting up the [cross-platform Cosmos DB emulator](https://docs.microsoft.com/azure/cosmos-db/linux-emulator?tabs=ssl-netstd21) (to learn more on how that is all setup, check out [this blog post](https://www.aaron-powell.com/posts/2021-05-27-local-dev-with-cosmosdb-and-devcontainers/)).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You'll need to create the `.env.local` file using the `.env.sample` template (which contains the local emulator configuration settings).
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Manual setup
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+To get started you'll need the following installed:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Node.js 14 (you can use `nvm use` against the .nvmrc in the repo)
+- [Cosmos DB emulator](https://docs.microsoft.com/azure/cosmos-db/local-emulator?tabs=ssl-netstd21) (or you can use Cosmos on Azure)
 
-## Learn More
+Clone the repo from GitHub and run `npm install`
 
-To learn more about Next.js, take a look at the following resources:
+### Importing data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A sample dataset, obtained from [OpenTrivia DB](https://opentdb.com/), exists in the `trivia.json` file. You can import this via `npm run import-data`, [using the VSCode extension for Azure Databases](https://github.com/microsoft/vscode-cosmosdb/blob/main/README.md#import-into-cosmos-db) or import using the [data migration tool](https://docs.microsoft.com/en-us/azure/cosmos-db/import-data).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
+This application can be found at https://nextjs-trivia-demo.aaron-powell.com and is deployed using the [hybrid rendering support on Azure Static Web Apps]().
