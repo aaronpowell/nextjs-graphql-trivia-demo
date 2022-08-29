@@ -25,7 +25,6 @@ export const resolvers = {
           question,
           language
         );
-        console.log(language, tq);
         return tq;
       }
 

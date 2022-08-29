@@ -31,9 +31,15 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
         }
       );
 
+      const tq = translated![0].translations![0].text;
+
+      if (!tq) {
+        return question;
+      }
+
       return {
         ...question,
-        question: translated[0].translations[0].text,
+        question: tq,
       };
     } catch (e) {
       console.error(e);
