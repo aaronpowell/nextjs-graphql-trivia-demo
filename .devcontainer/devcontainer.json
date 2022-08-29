@@ -19,15 +19,19 @@
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "ms-azuretools.vscode-cosmosdb",
-    "apollographql.vscode-apollo"
+    "apollographql.vscode-apollo",
+    "ms-azuretools.vscode-azurestaticwebapps",
+    "ms-azuretools.azure-dev"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "npm i",
+  "postCreateCommand": "npm i && ./.devcontainer/post-create.sh",
 
   // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "node"
+  "remoteUser": "node",
+
+  "features": {}
 }
