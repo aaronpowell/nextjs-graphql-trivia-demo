@@ -12,7 +12,7 @@ type AnswerCheck {
 }
 
 type Query {
-  question(lastQuestionId: ID, upperLimit: Int!): Question!
+  question(lastQuestionId: ID, upperLimit: Int!, language: String = "en"): Question!
 }
 
 type Mutation {
