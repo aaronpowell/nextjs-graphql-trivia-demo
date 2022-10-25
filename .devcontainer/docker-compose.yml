@@ -18,8 +18,8 @@ services:
     entrypoint: /usr/local/share/docker-init.sh
     command: sleep infinity
 
-    network_mode: service:cosmos
-  cosmos:
+    network_mode: service:cosmos-nextjs-graphql-swa
+  cosmos-nextjs-graphql-swa:
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
     mem_limit: 3g
     cpu_count: 2

@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-ipAddress=https://$(docker inspect $(docker ps -f "name=cosmos" -q)  -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'):8081
+ipAddress=https://$(docker inspect $(docker ps -f "name=cosmos-nextjs-graphql-swa" -q)  -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'):8081
 
 # Try to get the emulator cert in a loop
 until sudo curl -ksf "${ipAddress}/_explorer/emulator.pem" -o '/usr/local/share/ca-certificates/emulator.crt'; do
