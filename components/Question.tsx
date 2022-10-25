@@ -6,10 +6,19 @@ import styles from "../styles/Home.module.css";
 import type { QuestionModel } from "../models/QuestionModel";
 import { QuestionDisplay } from "./QuestionDisplay";
 import type { ValidateAnswerModel } from "../models/ValidateAnswerModel";
+import { useRouter } from "next/router";
 
 const GET_QUESTION = gql`
-  query getQuestion($lastQuestionId: ID, $upperLimit: Int! = 100) {
-    question(lastQuestionId: $lastQuestionId, upperLimit: $upperLimit) {
+  query getQuestion(
+    $lastQuestionId: ID
+    $upperLimit: Int! = 100
+    $language: String!
+  ) {
+    question(
+      lastQuestionId: $lastQuestionId
+      upperLimit: $upperLimit
+      language: $language
+    ) {
       id
       question
       answers
@@ -27,6 +36,7 @@ const SUBMIT_ANSWER = gql`
 `;
 
 export const Question: NextPage<{ count: number }> = ({ count }) => {
+  const router = useRouter();
   const [lastQuestionId, setLastQuestionId] = useState<string | null>(null);
   const [wasCorrect, setWasCorrect] = useState<boolean | null>(null);
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
@@ -40,7 +50,11 @@ export const Question: NextPage<{ count: number }> = ({ count }) => {
   const { called, loading, data, refetch, networkStatus } = useQuery<{
     question: QuestionModel;
   }>(GET_QUESTION, {
-    variables: { lastQuestionId, upperLimit: count },
+    variables: {
+      lastQuestionId,
+      upperLimit: count,
+      language: router.locale || "en",
+    },
     notifyOnNetworkStatusChange: true,
   });
 

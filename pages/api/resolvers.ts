@@ -1,5 +1,5 @@
 import { SqlQuerySpec } from "@azure/cosmos";
-import { container } from "../../cosmos";
+import type { ApolloContext } from "./ApolloContext";
 
 const arrayRandomiser = <T>(array: T[]) =>
   array.sort(() => 0.5 - Math.random());
@@ -11,29 +11,24 @@ export const resolvers = {
       {
         lastQuestionId,
         upperLimit,
-      }: { lastQuestionId: string; upperLimit: number }
+        language,
+      }: { lastQuestionId: string; upperLimit: number; language: string },
+      { dataSources }: ApolloContext
     ) {
-      const random = Math.floor(Math.random() * upperLimit);
-      const querySpec = {
-        query:
-          "SELECT * from c WHERE c.id <> @lastQuestionId OFFSET @offset LIMIT 1",
-        parameters: [
-          {
-            name: "@lastQuestionId",
-            value: lastQuestionId == undefined ? null : lastQuestionId,
-          },
-          {
-            name: "@offset",
-            value: random,
-          },
-        ],
-      };
+      const question = await dataSources.questions.getQuestion(
+        lastQuestionId,
+        Math.floor(Math.random() * upperLimit)
+      );
 
-      const { resources: items } = await container.items
-        .query(querySpec)
-        .fetchAll();
+      if (language !== "en") {
+        const tq = await dataSources.translator.translateQuestion(
+          question,
+          language
+        );
+        return tq;
+      }
 
-      return items[0];
+      return question;
     },
   },
   Question: {
@@ -46,23 +41,14 @@ export const resolvers = {
   Mutation: {
     async validateAnswer(
       _: unknown,
-      { questionId, answer }: { questionId: string; answer: string }
+      { questionId, answer }: { questionId: string; answer: string },
+      { dataSources }: ApolloContext
     ) {
-      const querySpec: SqlQuerySpec = {
-        query: "SELECT * from c WHERE c.id = @questionId",
-        parameters: [
-          {
-            name: "@questionId",
-            value: questionId,
-          },
-        ],
-      };
+      const question = await dataSources.questions.findOneById(questionId);
 
-      const { resources: items } = await container.items
-        .query(querySpec)
-        .fetchAll();
-
-      const question = items[0];
+      if (!question) {
+        throw new Error(`Question ${questionId} is invalid`);
+      }
 
       return {
         correct: question.correct_answer === answer,

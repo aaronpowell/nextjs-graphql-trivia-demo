@@ -1,0 +1,26 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 10px 0;
+  border-bottom: 1px solid #999;
+}
+
+.navbar a {
+  margin: 5px 0px 5px 0px;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.navbar a:after {
+  content: "|";
+  padding-left: 5px;
+  color: #ccc;
+}
+
+.navbar a:last-of-type:after {
+  content: "";
+}
