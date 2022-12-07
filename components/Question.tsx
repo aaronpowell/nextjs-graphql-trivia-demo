@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 const GET_QUESTION = gql`
   query getQuestion(
     $lastQuestionId: ID
-    $upperLimit: Int! = 100
+    $upperLimit: Int! = 5
     $language: String!
   ) {
     question(
@@ -35,8 +35,13 @@ const SUBMIT_ANSWER = gql`
   }
 `;
 
-export const Question: NextPage<{ count: number }> = ({ count }) => {
+export const Question: NextPage<{ count: number, gameQuestionCount: number }> = ({ count, gameQuestionCount }) => {
+
+  console.log(`Question count=${count}`)
+  console.log(`Max questions = ${gameQuestionCount}`)
+
   const router = useRouter();
+  const [questionsAskedCount, setQuestionsAskedCount] = useState<number>(1);
   const [lastQuestionId, setLastQuestionId] = useState<string | null>(null);
   const [wasCorrect, setWasCorrect] = useState<boolean | null>(null);
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
@@ -83,24 +88,32 @@ export const Question: NextPage<{ count: number }> = ({ count }) => {
 
   return (
     <>
+
+      { questionsAskedCount < gameQuestionCount && 
+      <>
       <QuestionDisplay
         question={question}
         setAnswer={setAnswer}
         selectedAnswer={answer}
         correctAnswer={correctAnswer}
         wasCorrect={wasCorrect}
+        currentQuestion={questionsAskedCount}
+        totalQuestions={gameQuestionCount}
       />
       <p className={styles.description}>
         {!correctAnswer && (
           <button
             disabled={!answer || validateAnswerLoading}
-            onClick={() =>
+            onClick={() => {
+
+              console.log(`submit`)
+
               validateAnswer({
                 variables: {
                   questionId: question.id,
                   answer,
                 },
-              })
+              })}
             }
           >
             Submit answer
@@ -119,12 +132,19 @@ export const Question: NextPage<{ count: number }> = ({ count }) => {
               setAnswer(null);
               setCorrectAnswer(null);
               setWasCorrect(null);
+              setQuestionsAskedCount(questionsAskedCount + 1)
             }}
           >
             Next question
           </button>
         )}
+
       </p>
+      </>
+      }
+      { questionsAskedCount >= gameQuestionCount && 
+        <>Done {questionsAskedCount} of {gameQuestionCount}</>
+      } 
     </>
   );
 };

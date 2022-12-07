@@ -1,7 +1,7 @@
 import { TranslatorTextClient } from "@azure/cognitiveservices-translatortext";
 import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js";
 import { DataSource } from "apollo-datasource";
-import type { ApolloContext } from "./ApolloContext";
+import type { ApolloContext } from "../context/ApolloContext";
 import type { Question } from "./Question";
 
 export class TranslatorDataSource extends DataSource<ApolloContext> {

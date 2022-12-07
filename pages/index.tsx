@@ -14,14 +14,20 @@ export async function getServerSideProps() {
     .query(querySpec)
     .fetchAll();
 
+  console.log(`getServerSideProps count=1`);
+
+
   return {
     props: {
-      count: items[0].count,
+      count: 1 //items[0].count / 20,
     },
   };
 }
 
 const Home: NextPage<{ count: number }> = (props) => {
+
+  console.log(`Home count=1`);
+
   return (
     <>
       <Navbar />
@@ -35,7 +41,7 @@ const Home: NextPage<{ count: number }> = (props) => {
         <main className={styles.main}>
           <h1 className={styles.title}>Trivia time!</h1>
 
-          <Question count={props.count} />
+          <Question count={props.count} gameQuestionCount={5}/>
         </main>
 
         <footer className={styles.footer}>

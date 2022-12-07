@@ -1,5 +1,5 @@
 import { CosmosDataSource } from "apollo-datasource-cosmosdb";
-import type { ApolloContext } from "./ApolloContext";
+import type { ApolloContext } from "../context/ApolloContext";
 import type { Question } from "./Question";
 
 export class QuestionDataSource extends CosmosDataSource<Question, ApolloContext> {

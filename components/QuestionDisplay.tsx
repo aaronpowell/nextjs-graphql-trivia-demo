@@ -8,9 +8,12 @@ export const QuestionDisplay: NextPage<{
   selectedAnswer: string | null;
   correctAnswer: string | null;
   wasCorrect: boolean | null;
-}> = ({ question, setAnswer, selectedAnswer, correctAnswer, wasCorrect }) => {
+  currentQuestion: number;
+  totalQuestions: number;
+}> = ({ question, setAnswer, selectedAnswer, correctAnswer, wasCorrect, currentQuestion, totalQuestions }) => {
   return (
     <>
+      <p>{currentQuestion} of {totalQuestions}</p>
       <p
         className={styles.description}
         dangerouslySetInnerHTML={{ __html: question.question }}
