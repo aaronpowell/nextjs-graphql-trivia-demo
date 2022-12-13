@@ -7,11 +7,12 @@ import type { QuestionModel } from "../models/QuestionModel";
 import { QuestionDisplay } from "./QuestionDisplay";
 import type { ValidateAnswerModel } from "../models/ValidateAnswerModel";
 import { useRouter } from "next/router";
+import { CONSTANTS } from "../shared/constants";
 
 const GET_QUESTION = gql`
   query getQuestion(
     $lastQuestionId: ID
-    $upperLimit: Int! = 5
+    $upperLimit: Int! = ${CONSTANTS.MAX_ITEMS_IN_DATABASE}
     $language: String!
   ) {
     question(
@@ -27,8 +28,8 @@ const GET_QUESTION = gql`
 `;
 
 const SUBMIT_ANSWER = gql`
-  mutation validateAnswer($questionId: ID!, $answer: String!) {
-    validateAnswer(questionId: $questionId, answer: $answer) {
+  mutation validateAnswer($questionId: ID!, $answer: String!, $language: String!) {
+    validateAnswer(questionId: $questionId, answer: $answer, language: $language) {
       correct
       correctAnswer
     }
@@ -37,10 +38,9 @@ const SUBMIT_ANSWER = gql`
 
 export const Question: NextPage<{ count: number, gameQuestionCount: number }> = ({ count, gameQuestionCount }) => {
 
-  console.log(`Question count=${count}`)
-  console.log(`Max questions = ${gameQuestionCount}`)
-
   const router = useRouter();
+  const [language, setLanguage] = useState<string>("en");
+  const [correctQuestionCount, setCorrectQuestionCount] = useState<number>(0);
   const [questionsAskedCount, setQuestionsAskedCount] = useState<number>(1);
   const [lastQuestionId, setLastQuestionId] = useState<string | null>(null);
   const [wasCorrect, setWasCorrect] = useState<boolean | null>(null);
@@ -58,7 +58,7 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
     variables: {
       lastQuestionId,
       upperLimit: count,
-      language: router.locale || "en",
+      language,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -74,9 +74,17 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
 
   useEffect(() => {
     if (data) {
+      console.log(`data as question ${JSON.stringify(data)}`)
       setQuestion(data.question);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (router.locale) {
+      setLanguage(router.locale);
+    }
+  }, [router.locale]);
+
 
   if (!called) {
     return <p className={styles.description}>Getting the first question...</p>;
@@ -112,6 +120,7 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
                 variables: {
                   questionId: question.id,
                   answer,
+                  language
                 },
               })}
             }
@@ -133,6 +142,7 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
               setCorrectAnswer(null);
               setWasCorrect(null);
               setQuestionsAskedCount(questionsAskedCount + 1)
+              setCorrectQuestionCount(correctQuestionCount + 1)
             }}
           >
             Next question
@@ -143,7 +153,14 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
       </>
       }
       { questionsAskedCount >= gameQuestionCount && 
-        <>Done {questionsAskedCount} of {gameQuestionCount}</>
+        <div className={styles.endgamecard}>
+          <div className={styles.description}>{correctQuestionCount} correct answers in {gameQuestionCount} questions</div>
+          <button  onClick={async () => {
+
+              setQuestionsAskedCount(0)
+              setCorrectQuestionCount(0)
+            }}>New game</button>
+        </div>
       } 
     </>
   );

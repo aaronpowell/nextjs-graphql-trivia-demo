@@ -1,32 +1,39 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { container } from "../cosmos";
+import { getExistingContainer } from "../azure/azureCosmosdb";
 import { Question } from "../components/Question";
 import Navbar from "./components/Navbar";
 
+
+// Server side rendering
 export async function getServerSideProps() {
+  
   const querySpec = {
     query: "SELECT count(c.id) as count from c",
   };
+
+  const container = await getExistingContainer();
 
   const { resources: items } = await container.items
     .query(querySpec)
     .fetchAll();
 
-  console.log(`getServerSideProps count=1`);
+  console.log(`getServerSideProps ${JSON.stringify(items)}`);
 
 
+  // This value is used in server side rendering
   return {
     props: {
-      count: 1 //items[0].count / 20,
+      buildOn: (new Date()).toLocaleString(),
+      count: items[0].count, // Should equal CONSTANTS.MAX_ITEMS_IN_DATABASE (100)
     },
   };
 }
 
-const Home: NextPage<{ count: number }> = (props) => {
+const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
 
-  console.log(`Home count=1`);
+  console.log(`Home count=${props.count}`);
 
   return (
     <>
@@ -45,6 +52,7 @@ const Home: NextPage<{ count: number }> = (props) => {
         </main>
 
         <footer className={styles.footer}>
+          Built on: {props.buildOn}
           <a
             href="https://nextjs.org/"
             target="_blank"
@@ -68,6 +76,9 @@ const Home: NextPage<{ count: number }> = (props) => {
           >
             Open Sourced on GitHub
           </a>
+
+
+
         </footer>
       </div>
     </>

@@ -1,5 +1,5 @@
 import { SqlQuerySpec } from "@azure/cosmos";
-import type { ApolloContext } from "./ApolloContext";
+import type { ApolloContext } from "../context/ApolloContext";
 
 const arrayRandomiser = <T>(array: T[]) =>
   array.sort(() => 0.5 - Math.random());
@@ -41,7 +41,7 @@ export const resolvers = {
   Mutation: {
     async validateAnswer(
       _: unknown,
-      { questionId, answer }: { questionId: string; answer: string },
+      { questionId, answer, language }: { questionId: string; answer: string, language: string },
       { dataSources }: ApolloContext
     ) {
       const question = await dataSources.questions.findOneById(questionId);
@@ -50,6 +50,15 @@ export const resolvers = {
         throw new Error(`Question ${questionId} is invalid`);
       }
 
+      if(language==='en'){
+        return {
+          correct: question.correct_answer === answer,
+          questionId,
+          correctAnswer: question.correct_answer,
+        };
+      }
+
+      // translate
       return {
         correct: question.correct_answer === answer,
         questionId,

@@ -21,12 +21,15 @@ export const QuestionDisplay: NextPage<{
       {correctAnswer && (
         <p className={styles.description}>
           {wasCorrect === null ? null : wasCorrect ? (
-            <span>✅</span>
+            <span>✅ Correct</span>
           ) : (
+            <>
             <span>❌</span>
+            The correct answer was:{" "}
+            <span dangerouslySetInnerHTML={{ __html: correctAnswer }}></span>
+            </>
           )}
-          The correct answer was:{" "}
-          <span dangerouslySetInnerHTML={{ __html: correctAnswer }}></span>
+          
         </p>
       )}
       <div className={styles.grid}>

@@ -16,7 +16,7 @@ type Query {
 }
 
 type Mutation {
-  validateAnswer(questionId: ID!, answer: String!): AnswerCheck!
+  validateAnswer(questionId: ID!, answer: String!, language: String = "en"): AnswerCheck!
 }
 
 schema {

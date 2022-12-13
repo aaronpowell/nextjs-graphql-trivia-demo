@@ -4,11 +4,12 @@ import { addResolversToSchema } from "@graphql-tools/schema";
 import { DataSources } from "apollo-server-core/src/graphqlOptions";
 import { ApolloServer } from "apollo-server-nextjs";
 import { join } from "path";
-import { container } from "../../cosmos";
+import { getExistingContainer } from "../../azure/azureCosmosdb";
 import type { ApolloContext } from "./context/ApolloContext";
 import { QuestionDataSource } from "./datasources/QuestionDataSource";
 import { TranslatorDataSource } from "./datasources/TranslatorDataSource";
 import { resolvers } from "./resolvers/resolvers";
+import { DebugPlugin } from "./plugins/debugPlugin";
 
 const schema = loadSchemaSync(
   join(__dirname, "..", "..", "..", "..", "schema", "schema.graphql"),
@@ -17,17 +18,18 @@ const schema = loadSchemaSync(
   }
 );
 
-const dataSources: () => DataSources<ApolloContext> = () => ({
-  questions: new QuestionDataSource(container),
-  translator: new TranslatorDataSource(
-    process.env.TRANSLATOR_KEY,
-    process.env.TRANSLATOR_ENDPOINT
-  ),
-});
+const dataSources: () => DataSources<ApolloContext> = () => {
+  
+  return {
+    questions: new QuestionDataSource(getExistingContainer()),
+    translator: new TranslatorDataSource(),
+  };
+};
 
 const apolloServer = new ApolloServer({
   schema: addResolversToSchema({ schema, resolvers }),
   dataSources,
+  //plugins: [DebugPlugin],
 });
 
 export default apolloServer.createHandler();
