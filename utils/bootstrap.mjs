@@ -34,8 +34,12 @@ async function setupData() {
 
   try {
     const batchSize = 10;
+    
+    const begin = i * batchSize;
+    const end = begin + batchSize;
+    
     for (let i = 0; i < batchSize; i++) {
-      const questionsBatch = questions.slice(i * batchSize, batchSize);
+      const questionsBatch = questions.slice(begin, end);
       await container.items.bulk(questionsBatch);
     }
 
