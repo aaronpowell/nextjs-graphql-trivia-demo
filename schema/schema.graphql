@@ -9,7 +9,6 @@ type AnswerCheck {
   questionId: ID!
   correct: Boolean!
   correctAnswer: String!
-  question: Question!
 }
 
 type Query {
