@@ -38,7 +38,7 @@ export const resolvers = {
     },
   },
   Question: { //overwrite field resolver
-    correctAnswer(question: any){
+    correctAnswer(question: QuestionDbModel){
       return question.correct_answer;
     },
     answers(question: any) {
