@@ -74,7 +74,6 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
 
   useEffect(() => {
     if (data) {
-      console.log(`data as question ${JSON.stringify(data)}`)
       setQuestion(data.question);
     }
   }, [data]);
