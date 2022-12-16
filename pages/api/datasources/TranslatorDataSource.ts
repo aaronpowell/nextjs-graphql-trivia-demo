@@ -121,8 +121,9 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
 
       // Get translated values out of returned object
       // @ts-ignore
-      const translatedCorrectAnswer: string = translationResults[0].translations[0].text;
-  
+      const translatedCorrectAnswer: string =
+        translationResults[0].translations[0].text;
+
       return translatedCorrectAnswer;
     } catch (e) {
       console.error(e);
