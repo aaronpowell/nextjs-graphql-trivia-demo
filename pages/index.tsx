@@ -29,9 +29,6 @@ export async function getServerSideProps() {
 }
 
 const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
-
-  console.log(`Home count=${props.count}`);
-
   return (
     <>
       <Navbar />
