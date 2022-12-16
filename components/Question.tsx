@@ -74,7 +74,6 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
 
   useEffect(() => {
     if (data) {
-      console.log(`data as question ${JSON.stringify(data)}`)
       setQuestion(data.question);
     }
   }, [data]);
@@ -113,9 +112,6 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
           <button
             disabled={!answer || validateAnswerLoading}
             onClick={() => {
-
-              console.log(`submit`)
-
               validateAnswer({
                 variables: {
                   questionId: question.id,
@@ -155,10 +151,9 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
       { questionsAskedCount >= gameQuestionCount && 
         <div className={styles.endgamecard}>
           <div className={styles.description}>{correctQuestionCount} correct answers in {gameQuestionCount} questions</div>
-          <button  onClick={async () => {
-
-              setQuestionsAskedCount(0)
-              setCorrectQuestionCount(0)
+          <button onClick={async () => {
+              setQuestionsAskedCount(0);
+              setCorrectQuestionCount(0);
             }}>New game</button>
         </div>
       } 
