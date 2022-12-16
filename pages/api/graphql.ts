@@ -28,7 +28,7 @@ const dataSources: () => DataSources<ApolloContext> = () => {
 const apolloServer = new ApolloServer({
   schema: addResolversToSchema({ schema, resolvers }),
   dataSources,
-  plugins: [DebugPlugin],
+  //plugins: [DebugPlugin],
 });
 
 export default apolloServer.createHandler();

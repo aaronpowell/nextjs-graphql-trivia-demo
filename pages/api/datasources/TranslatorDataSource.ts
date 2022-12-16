@@ -6,9 +6,11 @@ import { DataSource } from "apollo-datasource";
 import {
   getTranslatorClient,
   getTranslation,
+  convertTranslationToStringArray
 } from "../../../azure/azureTranslatorText";
 import type { ApolloContext } from "../context/ApolloContext";
 import type { QuestionDbModel } from "../../../models/QuestionDbModel";
+import { createLROPollerFromPollState } from "@azure/ms-rest-azure-js";
 
 export class TranslatorDataSource extends DataSource<ApolloContext> {
   #client: TranslatorTextClient;
@@ -25,6 +27,8 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
     try {
       if (toLanguage === fromLanguage) return question;
 
+      // Translate the question, correct answer, and all incorrect answers
+      // Sent to translation service as an array for bulk translation
       const textToTranslate = [
         question.question,
         question.correct_answer,
@@ -38,25 +42,15 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
         textToTranslate
       );
 
-      // return original if wasn't translated
-      if (!translationResults || translationResults.length === 0)
-        return question;
-
-      // Get Answers
-      // @ts-ignore
-      const incorrectAnswers: string[] = translationResults
-        .slice(2, translationResults.length)
-        .map((translatedObj: TranslatorTextModels.TranslateResultAllItem) => {
-          if (translatedObj?.translations) {
-            return translatedObj?.translations[0].text;
-          }
-        });
+      // simplify to translated text array
+      const translatedList =
+        convertTranslationToStringArray(translationResults);
 
       const translatedQuestion = {
         ...question,
-        question: translationResults![0].translations![0].text as string,
-        correct_answer: translationResults![1].translations![0].text as string,
-        incorrect_answers: incorrectAnswers,
+        question: translatedList[0],
+        correct_answer: translatedList[1],
+        incorrect_answers: translatedList.slice(2),
       };
 
       return translatedQuestion;
@@ -80,21 +74,10 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
         answers
       );
 
-      // return original if wasn't translated
-      if (!translationResults || translationResults.length === 0)
-        return answers;
+      const translatedList =
+        convertTranslationToStringArray(translationResults);
 
-      // Get translated values out of returned object
-      // @ts-ignore
-      const incorrectAnswers: string[] = translationResults
-        .slice(2, translationResults.length)
-        .map((translatedObj: TranslatorTextModels.TranslateResultAllItem) => {
-          if (translatedObj?.translations) {
-            return translatedObj?.translations[0].text;
-          }
-        });
-
-      return incorrectAnswers;
+      return translatedList;
     } catch (e) {
       console.error(e);
       throw e;
@@ -115,16 +98,11 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
         fromLanguage,
         [correctAnswer]
       );
-      // return original if wasn't translated
-      if (!translationResults || translationResults.length === 0)
-        return correctAnswer;
 
-      // Get translated values out of returned object
-      // @ts-ignore
-      const translatedCorrectAnswer: string =
-        translationResults[0].translations[0].text;
+      const translatedList =
+        convertTranslationToStringArray(translationResults);
 
-      return translatedCorrectAnswer;
+      return translatedList;
     } catch (e) {
       console.error(e);
       throw e;
