@@ -31,8 +31,15 @@ export const resolvers = {
       return question;
     },
   },
+<<<<<<< HEAD
   Question: {
     //overwrite field resolver
+=======
+  Question: { //overwrite field resolver
+    correctAnswer(question: QuestionDbModel){
+      return question.correct_answer;
+    },
+>>>>>>> 9f3a290c454964c7cd4a875bc2ba033448ee7a69
     answers(question: any) {
       return arrayRandomiser(
         question.incorrect_answers.concat(question.correct_answer)

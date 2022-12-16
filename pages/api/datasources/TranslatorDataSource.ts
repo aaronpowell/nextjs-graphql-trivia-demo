@@ -115,16 +115,14 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
         fromLanguage,
         [correctAnswer]
       );
-
       // return original if wasn't translated
       if (!translationResults || translationResults.length === 0)
         return correctAnswer;
 
       // Get translated values out of returned object
       // @ts-ignore
-      const translatedCorrectAnswer: string =
-        translationResults[0].translations[0].text;
-
+      const translatedCorrectAnswer: string = translationResults[0].translations[0].text;
+  
       return translatedCorrectAnswer;
     } catch (e) {
       console.error(e);
