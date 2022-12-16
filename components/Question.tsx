@@ -112,9 +112,6 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
           <button
             disabled={!answer || validateAnswerLoading}
             onClick={() => {
-
-              console.log(`submit`)
-
               validateAnswer({
                 variables: {
                   questionId: question.id,
