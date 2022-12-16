@@ -8,6 +8,10 @@
     "resolveJsonModule": true,
     "outDir": "upload"
   },
-  "include": ["./azure/secretsConfig.ts", "./azure/azure-cosmosdb.ts", "./azure/uploadData.ts"],
+  "include": [
+    "./azure/secretsConfig.ts",
+    "./azure/azure-cosmosdb.ts",
+    "./azure/uploadData.ts"
+  ],
   "exclude": ["node_modules"]
 }

@@ -34,3 +34,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Don't checkint ./upload because it is generated
+/upload/

@@ -5,10 +5,8 @@ import { getExistingContainer } from "../azure/azureCosmosdb";
 import { Question } from "../components/Question";
 import Navbar from "./components/Navbar";
 
-
 // Server side rendering
 export async function getServerSideProps() {
-  
   const querySpec = {
     query: "SELECT count(c.id) as count from c",
   };
@@ -19,22 +17,16 @@ export async function getServerSideProps() {
     .query(querySpec)
     .fetchAll();
 
-  console.log(`getServerSideProps ${JSON.stringify(items)}`);
-
-
   // This value is used in server side rendering
   return {
     props: {
-      buildOn: (new Date()).toLocaleString(),
+      buildOn: new Date().toLocaleString(),
       count: items[0].count, // Should equal CONSTANTS.MAX_ITEMS_IN_DATABASE (100)
     },
   };
 }
 
-const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
-
-  console.log(`Home count=${props.count}`);
-
+const Home: NextPage<{ count: number; buildOn: string }> = (props) => {
   return (
     <>
       <Navbar />
@@ -48,7 +40,7 @@ const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
         <main className={styles.main}>
           <h1 className={styles.title}>Trivia time!</h1>
 
-          <Question count={props.count} gameQuestionCount={5}/>
+          <Question count={props.count} gameQuestionCount={5} />
         </main>
 
         <footer className={styles.footer}>
@@ -60,7 +52,6 @@ const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
           >
             Build with Next.js
           </a>
-
           <a
             href="https://docs.microsoft.com/azure/static-web-apps/"
             target="_blank"
@@ -68,7 +59,6 @@ const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
           >
             Powered by Azure
           </a>
-
           <a
             href="https://github.com/aaronpowell/nextjs-graphql-trivia-demo"
             target="_blank"
@@ -76,9 +66,6 @@ const Home: NextPage<{ count: number, buildOn: string }> = (props) => {
           >
             Open Sourced on GitHub
           </a>
-
-
-
         </footer>
       </div>
     </>

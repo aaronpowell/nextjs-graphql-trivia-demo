@@ -8,11 +8,11 @@ export default function LocaleSwitcher() {
   }
   //const otherLocales = locales.filter((l) => l !== locale);
 
-  function convertLocaleToCultureName(locale:string ){
-    switch(locale){
-      case "en": 
-      return "English";
-      case "fr": 
+  function convertLocaleToCultureName(locale: string) {
+    switch (locale) {
+      case "en":
+        return "English";
+      case "fr":
         return "French";
       case "es":
         return "Spanish";

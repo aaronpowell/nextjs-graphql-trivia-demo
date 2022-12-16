@@ -19,7 +19,6 @@ const schema = loadSchemaSync(
 );
 
 const dataSources: () => DataSources<ApolloContext> = () => {
-  
   return {
     questions: new QuestionDataSource(getExistingContainer()),
     translator: new TranslatorDataSource(),
@@ -29,7 +28,7 @@ const dataSources: () => DataSources<ApolloContext> = () => {
 const apolloServer = new ApolloServer({
   schema: addResolversToSchema({ schema, resolvers }),
   dataSources,
-  //plugins: [DebugPlugin],
+  plugins: [DebugPlugin],
 });
 
 export default apolloServer.createHandler();

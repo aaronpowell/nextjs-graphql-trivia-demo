@@ -1,0 +1,7 @@
+.next
+.devcontainer
+.github
+.vscode
+node_modules
+upload
+**/*.js

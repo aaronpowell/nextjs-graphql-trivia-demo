@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write .",
     "upload:build": "rm -rf upload && tsc --project tsconfig.upload.json",
     "upload:start": "node ./upload/azure/uploadData.js"
   },

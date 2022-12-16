@@ -1,8 +1,11 @@
 import { CosmosDataSource } from "apollo-datasource-cosmosdb";
 import type { ApolloContext } from "../context/ApolloContext";
-import type { QuestionDbModel } from "./QuestionDbModel";
+import type { QuestionDbModel } from "../../../models/QuestionDbModel";
 
-export class QuestionDataSource extends CosmosDataSource<QuestionDbModel, ApolloContext> {
+export class QuestionDataSource extends CosmosDataSource<
+  QuestionDbModel,
+  ApolloContext
+> {
   public async getQuestion(
     lastQuestionId: string,
     offset: number

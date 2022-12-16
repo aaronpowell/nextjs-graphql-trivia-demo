@@ -28,16 +28,26 @@ const GET_QUESTION = gql`
 `;
 
 const SUBMIT_ANSWER = gql`
-  mutation validateAnswer($questionId: ID!, $answer: String!, $language: String!) {
-    validateAnswer(questionId: $questionId, answer: $answer, language: $language) {
+  mutation validateAnswer(
+    $questionId: ID!
+    $answer: String!
+    $language: String!
+  ) {
+    validateAnswer(
+      questionId: $questionId
+      answer: $answer
+      language: $language
+    ) {
       correct
       correctAnswer
     }
   }
 `;
 
-export const Question: NextPage<{ count: number, gameQuestionCount: number }> = ({ count, gameQuestionCount }) => {
-
+export const Question: NextPage<{
+  count: number;
+  gameQuestionCount: number;
+}> = ({ count, gameQuestionCount }) => {
   const router = useRouter();
   const [language, setLanguage] = useState<string>("en");
   const [correctQuestionCount, setCorrectQuestionCount] = useState<number>(0);
@@ -84,7 +94,6 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
     }
   }, [router.locale]);
 
-
   if (!called) {
     return <p className={styles.description}>Getting the first question...</p>;
   }
@@ -95,68 +104,73 @@ export const Question: NextPage<{ count: number, gameQuestionCount: number }> = 
 
   return (
     <>
+      {questionsAskedCount < gameQuestionCount && (
+        <>
+          <QuestionDisplay
+            question={question}
+            setAnswer={setAnswer}
+            selectedAnswer={answer}
+            correctAnswer={correctAnswer}
+            wasCorrect={wasCorrect}
+            currentQuestion={questionsAskedCount}
+            totalQuestions={gameQuestionCount}
+          />
+          <p className={styles.description}>
+            {!correctAnswer && (
+              <button
+                disabled={!answer || validateAnswerLoading}
+                onClick={() => {
+                  validateAnswer({
+                    variables: {
+                      questionId: question.id,
+                      answer,
+                      language,
+                    },
+                  });
+                }}
+              >
+                Submit answer
+              </button>
+            )}
 
-      { questionsAskedCount < gameQuestionCount && 
-      <>
-      <QuestionDisplay
-        question={question}
-        setAnswer={setAnswer}
-        selectedAnswer={answer}
-        correctAnswer={correctAnswer}
-        wasCorrect={wasCorrect}
-        currentQuestion={questionsAskedCount}
-        totalQuestions={gameQuestionCount}
-      />
-      <p className={styles.description}>
-        {!correctAnswer && (
-          <button
-            disabled={!answer || validateAnswerLoading}
-            onClick={() => {
-              validateAnswer({
-                variables: {
-                  questionId: question.id,
-                  answer,
-                  language
-                },
-              })}
-            }
-          >
-            Submit answer
-          </button>
-        )}
-
-        {correctAnswer && (
-          <button
-            key={question.id}
-            onClick={async () => {
-              const { data: newData } = await refetch({
-                lastQuestionId: question.id,
-              });
-              setLastQuestionId(question.id);
-              setQuestion(newData.question);
-              setAnswer(null);
-              setCorrectAnswer(null);
-              setWasCorrect(null);
-              setQuestionsAskedCount(questionsAskedCount + 1)
-              setCorrectQuestionCount(correctQuestionCount + 1)
-            }}
-          >
-            Next question
-          </button>
-        )}
-
-      </p>
-      </>
-      }
-      { questionsAskedCount >= gameQuestionCount && 
+            {correctAnswer && (
+              <button
+                key={question.id}
+                onClick={async () => {
+                  const { data: newData } = await refetch({
+                    lastQuestionId: question.id,
+                  });
+                  setLastQuestionId(question.id);
+                  setQuestion(newData.question);
+                  setAnswer(null);
+                  setCorrectAnswer(null);
+                  setWasCorrect(null);
+                  setQuestionsAskedCount(questionsAskedCount + 1);
+                  setCorrectQuestionCount(correctQuestionCount + 1);
+                }}
+              >
+                Next question
+              </button>
+            )}
+          </p>
+        </>
+      )}
+      {questionsAskedCount >= gameQuestionCount && (
         <div className={styles.endgamecard}>
-          <div className={styles.description}>{correctQuestionCount} correct answers in {gameQuestionCount} questions</div>
-          <button onClick={async () => {
+          <div className={styles.description}>
+            {correctQuestionCount} correct answers in {gameQuestionCount}{" "}
+            questions
+          </div>
+          <button
+            onClick={async () => {
               setQuestionsAskedCount(0);
               setCorrectQuestionCount(0);
-            }}>New game</button>
+            }}
+          >
+            New game
+          </button>
         </div>
-      } 
+      )}
     </>
   );
 };
