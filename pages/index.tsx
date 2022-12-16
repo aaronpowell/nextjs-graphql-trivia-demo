@@ -19,9 +19,6 @@ export async function getServerSideProps() {
     .query(querySpec)
     .fetchAll();
 
-  console.log(`getServerSideProps ${JSON.stringify(items)}`);
-
-
   // This value is used in server side rendering
   return {
     props: {
