@@ -126,9 +126,6 @@ export class TranslatorDataSource extends DataSource<ApolloContext> {
         fromLanguage,
         [correctAnswer]
       );
-  
-      console.log(`translation results = ${JSON.stringify(translationResults)}`);
-  
       // return original if wasn't translated
         if(!translationResults || translationResults.length===0) return correctAnswer;
 
