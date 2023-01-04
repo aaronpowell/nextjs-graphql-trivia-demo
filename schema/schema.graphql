@@ -12,11 +12,19 @@ type AnswerCheck {
 }
 
 type Query {
-  question(lastQuestionId: ID, upperLimit: Int!, language: String = "en"): Question!
+  question(
+    lastQuestionId: ID
+    upperLimit: Int!
+    language: String = "en"
+  ): Question!
 }
 
 type Mutation {
-  validateAnswer(questionId: ID!, answer: String!): AnswerCheck!
+  validateAnswer(
+    questionId: ID!
+    answer: String!
+    language: String = "en"
+  ): AnswerCheck!
 }
 
 schema {

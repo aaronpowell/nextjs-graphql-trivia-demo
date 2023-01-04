@@ -1,0 +1,4 @@
+export const CONSTANTS = {
+  MAX_ITEMS_IN_DATABASE: 100,
+  MAX_ITEMS_BATCH_UPLOAD: 10,
+};

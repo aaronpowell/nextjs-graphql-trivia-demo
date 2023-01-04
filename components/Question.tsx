@@ -7,11 +7,12 @@ import type { QuestionModel } from "../models/QuestionModel";
 import { QuestionDisplay } from "./QuestionDisplay";
 import type { ValidateAnswerModel } from "../models/ValidateAnswerModel";
 import { useRouter } from "next/router";
+import { CONSTANTS } from "../shared/constants";
 
 const GET_QUESTION = gql`
   query getQuestion(
     $lastQuestionId: ID
-    $upperLimit: Int! = 100
+    $upperLimit: Int! = ${CONSTANTS.MAX_ITEMS_IN_DATABASE}
     $language: String!
   ) {
     question(
@@ -27,16 +28,30 @@ const GET_QUESTION = gql`
 `;
 
 const SUBMIT_ANSWER = gql`
-  mutation validateAnswer($questionId: ID!, $answer: String!) {
-    validateAnswer(questionId: $questionId, answer: $answer) {
+  mutation validateAnswer(
+    $questionId: ID!
+    $answer: String!
+    $language: String!
+  ) {
+    validateAnswer(
+      questionId: $questionId
+      answer: $answer
+      language: $language
+    ) {
       correct
       correctAnswer
     }
   }
 `;
 
-export const Question: NextPage<{ count: number }> = ({ count }) => {
+export const Question: NextPage<{
+  count: number;
+  gameQuestionCount: number;
+}> = ({ count, gameQuestionCount }) => {
   const router = useRouter();
+  const [language, setLanguage] = useState<string>("en");
+  const [correctQuestionCount, setCorrectQuestionCount] = useState<number>(0);
+  const [questionsAskedCount, setQuestionsAskedCount] = useState<number>(1);
   const [lastQuestionId, setLastQuestionId] = useState<string | null>(null);
   const [wasCorrect, setWasCorrect] = useState<boolean | null>(null);
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
@@ -53,7 +68,7 @@ export const Question: NextPage<{ count: number }> = ({ count }) => {
     variables: {
       lastQuestionId,
       upperLimit: count,
-      language: router.locale || "en",
+      language,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -73,6 +88,12 @@ export const Question: NextPage<{ count: number }> = ({ count }) => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (router.locale) {
+      setLanguage(router.locale);
+    }
+  }, [router.locale]);
+
   if (!called) {
     return <p className={styles.description}>Getting the first question...</p>;
   }
@@ -83,48 +104,73 @@ export const Question: NextPage<{ count: number }> = ({ count }) => {
 
   return (
     <>
-      <QuestionDisplay
-        question={question}
-        setAnswer={setAnswer}
-        selectedAnswer={answer}
-        correctAnswer={correctAnswer}
-        wasCorrect={wasCorrect}
-      />
-      <p className={styles.description}>
-        {!correctAnswer && (
-          <button
-            disabled={!answer || validateAnswerLoading}
-            onClick={() =>
-              validateAnswer({
-                variables: {
-                  questionId: question.id,
-                  answer,
-                },
-              })
-            }
-          >
-            Submit answer
-          </button>
-        )}
+      {questionsAskedCount < gameQuestionCount && (
+        <>
+          <QuestionDisplay
+            question={question}
+            setAnswer={setAnswer}
+            selectedAnswer={answer}
+            correctAnswer={correctAnswer}
+            wasCorrect={wasCorrect}
+            currentQuestion={questionsAskedCount}
+            totalQuestions={gameQuestionCount}
+          />
+          <p className={styles.description}>
+            {!correctAnswer && (
+              <button
+                disabled={!answer || validateAnswerLoading}
+                onClick={() => {
+                  validateAnswer({
+                    variables: {
+                      questionId: question.id,
+                      answer,
+                      language,
+                    },
+                  });
+                }}
+              >
+                Submit answer
+              </button>
+            )}
 
-        {correctAnswer && (
+            {correctAnswer && (
+              <button
+                key={question.id}
+                onClick={async () => {
+                  const { data: newData } = await refetch({
+                    lastQuestionId: question.id,
+                  });
+                  setLastQuestionId(question.id);
+                  setQuestion(newData.question);
+                  setAnswer(null);
+                  setCorrectAnswer(null);
+                  setWasCorrect(null);
+                  setQuestionsAskedCount(questionsAskedCount + 1);
+                  setCorrectQuestionCount(correctQuestionCount + 1);
+                }}
+              >
+                Next question
+              </button>
+            )}
+          </p>
+        </>
+      )}
+      {questionsAskedCount >= gameQuestionCount && (
+        <div className={styles.endgamecard}>
+          <div className={styles.description}>
+            {correctQuestionCount} correct answers in {gameQuestionCount}{" "}
+            questions
+          </div>
           <button
-            key={question.id}
             onClick={async () => {
-              const { data: newData } = await refetch({
-                lastQuestionId: question.id,
-              });
-              setLastQuestionId(question.id);
-              setQuestion(newData.question);
-              setAnswer(null);
-              setCorrectAnswer(null);
-              setWasCorrect(null);
+              setQuestionsAskedCount(0);
+              setCorrectQuestionCount(0);
             }}
           >
-            Next question
+            New game
           </button>
-        )}
-      </p>
+        </div>
+      )}
     </>
   );
 };

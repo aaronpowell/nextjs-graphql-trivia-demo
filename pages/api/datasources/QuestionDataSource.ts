@@ -1,12 +1,15 @@
 import { CosmosDataSource } from "apollo-datasource-cosmosdb";
-import type { ApolloContext } from "./ApolloContext";
-import type { Question } from "./Question";
+import type { ApolloContext } from "../context/ApolloContext";
+import type { QuestionDbModel } from "../../../models/QuestionDbModel";
 
-export class QuestionDataSource extends CosmosDataSource<Question, ApolloContext> {
+export class QuestionDataSource extends CosmosDataSource<
+  QuestionDbModel,
+  ApolloContext
+> {
   public async getQuestion(
     lastQuestionId: string,
     offset: number
-  ): Promise<Question> {
+  ): Promise<QuestionDbModel> {
     const querySpec = {
       query:
         "SELECT * from c WHERE c.id <> @lastQuestionId OFFSET @offset LIMIT 1",

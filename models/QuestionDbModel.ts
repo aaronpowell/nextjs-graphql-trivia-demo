@@ -1,4 +1,4 @@
-export type Question = {
+export type QuestionDbModel = {
   id: string;
   category: string;
   type: string;

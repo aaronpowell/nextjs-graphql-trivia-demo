@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "outDir": "upload"
+  },
+  "include": [
+    "./azure/secretsConfig.ts",
+    "./azure/azure-cosmosdb.ts",
+    "./azure/uploadData.ts"
+  ],
+  "exclude": ["node_modules"]
+}

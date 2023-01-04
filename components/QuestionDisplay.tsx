@@ -8,9 +8,22 @@ export const QuestionDisplay: NextPage<{
   selectedAnswer: string | null;
   correctAnswer: string | null;
   wasCorrect: boolean | null;
-}> = ({ question, setAnswer, selectedAnswer, correctAnswer, wasCorrect }) => {
+  currentQuestion: number;
+  totalQuestions: number;
+}> = ({
+  question,
+  setAnswer,
+  selectedAnswer,
+  correctAnswer,
+  wasCorrect,
+  currentQuestion,
+  totalQuestions,
+}) => {
   return (
     <>
+      <p>
+        {currentQuestion} of {totalQuestions}
+      </p>
       <p
         className={styles.description}
         dangerouslySetInnerHTML={{ __html: question.question }}
@@ -18,12 +31,14 @@ export const QuestionDisplay: NextPage<{
       {correctAnswer && (
         <p className={styles.description}>
           {wasCorrect === null ? null : wasCorrect ? (
-            <span>✅</span>
+            <span>✅ Correct</span>
           ) : (
-            <span>❌</span>
+            <>
+              <span>❌</span>
+              The correct answer was:{" "}
+              <span dangerouslySetInnerHTML={{ __html: correctAnswer }}></span>
+            </>
           )}
-          The correct answer was:{" "}
-          <span dangerouslySetInnerHTML={{ __html: correctAnswer }}></span>
         </p>
       )}
       <div className={styles.grid}>

@@ -3,7 +3,7 @@
 }
 
 .main {
-  min-height: 100vh;
+  min-height: 50vh;
   padding: 4rem 0;
   flex: 1;
   display: flex;
@@ -118,4 +118,17 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.endgamecard {
+  margin: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  max-width: 300px;
 }
